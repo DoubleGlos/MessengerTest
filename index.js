@@ -5,12 +5,19 @@ const server = http.createServer(app);
 const { Server } = require("socket.io")
 const io = new Server(server)
 
+const connectedUsers = {};
+
 app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html");
 });
 
 io.on("connection", (socket) => {
-    console.log("ahh shit a user");
+    console.log("A user has connected");
+
+    const userId = socket.handshake.query.userId;
+
+    connectedUsers[socket.id] = { userId, socket };
+
     socket.on("disconnect", () => {
        console.log("Great they have gone");
     });
